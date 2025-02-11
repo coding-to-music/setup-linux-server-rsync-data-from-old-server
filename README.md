@@ -26,6 +26,11 @@ git push -u origin main
 
 ## Overall task list
 
+### Server basic setup
+
+- [ ] set hostname
+- [ ] set time zone to NYC
+
 ### Users
 
 - [ ] install ssh keys

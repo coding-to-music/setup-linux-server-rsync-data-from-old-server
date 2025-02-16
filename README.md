@@ -36,6 +36,7 @@ git push -u origin main
 - [ ] install ssh keys
 - [ ] disable root login
 - [ ] create user for myself
+- [ ] .bash_aliases for myself
 - [ ] sudo for myself
 - [ ] create user docker
 - [ ] create user grafana

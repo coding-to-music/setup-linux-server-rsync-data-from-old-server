@@ -116,7 +116,25 @@ git config --global user.email "your_email@example.com"
 ssh -T git@github.com
 ```
 
+## tar and compress (zip) files to back them up on another server
 
+```java
+tar -czvf project.tar.gz /home/source_user/project
+```
+
+## copy the tar file from one server to another
+
+With `scp` securely transfer a tar file between two servers that share the same SSH keys
+
+```java
+scp project.tar.gz destination_user@destination_server:/home/destination_user/
+```
+
+Uncompress the files from the archive
+
+```java
+tar -xzvf archive_name.tar.gz
+```
 
 ## Setup HashiCorp Vault to store secrets
 

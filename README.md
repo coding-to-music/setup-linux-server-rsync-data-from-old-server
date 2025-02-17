@@ -175,15 +175,15 @@ define username and github account keys using Value
 Create the user on the minion
 
 ```java
-salt '*' state.apply setup_user
+sudo salt '*' state.apply setup_user
 
 # or
 
-salt 'dev-*' state.apply setup_user
+sudo salt 'dev-*' state.apply setup_user
 
 # or
 
-salt 'server_name' state.apply setup_user
+sudo salt 'server_name' state.apply setup_user
 ```
 
 

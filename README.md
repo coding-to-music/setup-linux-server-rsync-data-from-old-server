@@ -30,6 +30,8 @@ git push -u origin main
 
 - [ ] set hostname
 - [ ] set time zone to NYC
+- [ ] remote mount a drive
+- [ ] setup drive rsync
 
 ### Users
 
@@ -43,6 +45,7 @@ git push -u origin main
 
 ### cli Software
 
+- [ ] github git
 - [ ] gh github login
 - [ ] vercel
 - [ ] cloudflare
@@ -68,6 +71,7 @@ git push -u origin main
 ### databases & more
 
 - [ ] postgresql
+- [ ] supabase
 - [ ] mongoDB
 - [ ] influxDB
 - [ ] kafka
@@ -80,3 +84,37 @@ git push -u origin main
 ### Other related repos for setups and installation
 
 https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
+
+
+## Setup HashiCorp Vault to store secrets
+
+## Install salt-master
+
+## Install salt-minions
+
+## accept keys so the master and minions see each other
+
+## testing to ensure proper operation
+
+## Using salt-master to perform tasks on the minions
+
+### Create myuser on a new minion
+
+define username and github account keys using Value
+
+Create the user on the minion
+
+```java
+salt '*' state.apply setup_user
+
+# or
+
+salt 'dev-*' state.apply setup_user
+
+# or
+
+salt 'server_name' state.apply setup_user
+
+```
+
+

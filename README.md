@@ -122,6 +122,36 @@ ssh -T git@github.com
 
 ## Install salt-master
 
+Create a Separate Configuration File to specify where the salt files are located:
+
+```java
+sudo nano /etc/salt/master.d/file_roots.conf
+```
+
+Add Custom Configuration:
+
+```java
+file_roots:
+  base:
+    - /path/to/saltstack-repo
+  dev:
+    - /path/to/saltstack-repo/dev
+  staging:
+    - /path/to/saltstack-repo/staging
+  production:
+    - /path/to/saltstack-repo/production
+
+pillar_roots:
+  base:
+    - /path/to/saltstack-repo/pillar
+```
+
+Restart the Salt Master:
+
+```java
+sudo systemctl restart salt-master
+```
+
 ## Install salt-minions
 
 ## accept keys so the master and minions see each other

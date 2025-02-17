@@ -126,6 +126,19 @@ ssh -T git@github.com
 
 ## accept keys so the master and minions see each other
 
+list accepted keys
+
+```java
+sudo salt-key -L
+```
+
+remove keys from a minion
+
+```java
+sudo salt-key -d minion_name
+```
+
+
 ## testing to ensure proper operation
 
 When running Salt commands from the command line, you should use sudo to elevate your privileges. For example:
@@ -171,7 +184,6 @@ salt 'dev-*' state.apply setup_user
 # or
 
 salt 'server_name' state.apply setup_user
-
 ```
 
 

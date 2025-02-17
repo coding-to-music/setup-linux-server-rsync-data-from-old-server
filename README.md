@@ -86,6 +86,38 @@ git push -u origin main
 https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
 
 
+## File Permissions for SSH Keys
+Private Key (id_rsa):
+
+Permissions: 600 (read and write for the owner only)
+
+```java
+chmod 600 ~/.ssh/id_rsa
+```
+
+Public Key (id_rsa.pub):
+
+Permissions: 644 (read and write for the owner, read-only for others)
+
+```java
+chmod 644 ~/.ssh/id_rsa.pub
+```
+
+## Add git to a new server and sign into GitHub
+
+```java
+sudo apt update
+sudo apt install git
+
+git config --global user.name "your_name"
+git config --global user.email "your_email@example.com"
+
+# test the connection to GitHub
+ssh -T git@github.com
+```
+
+
+
 ## Setup HashiCorp Vault to store secrets
 
 ## Install salt-master
@@ -95,6 +127,31 @@ https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
 ## accept keys so the master and minions see each other
 
 ## testing to ensure proper operation
+
+When running Salt commands from the command line, you should use sudo to elevate your privileges. For example:
+
+```java
+sudo salt '*' test.ping
+sudo salt '*' state.apply
+```
+
+Test Connectivity with Minions:
+
+```java
+sudo salt '*' test.ping
+```
+
+Apply a State File:
+
+```java
+sudo salt '*' state.apply setup_user
+```
+
+Run Arbitrary Commands:
+
+```java
+sudo salt '*' cmd.run 'echo Hello, World!'
+```
 
 ## Using salt-master to perform tasks on the minions
 

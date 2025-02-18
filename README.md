@@ -75,7 +75,7 @@ git push -u origin main
 - [ ] mongoDB
 - [ ] influxDB
 - [ ] kafka
-- [ ] k3s
+- [ ] k3s or MicroK8s
 
 ## Backup hard drive
 
@@ -85,6 +85,10 @@ git push -u origin main
 
 https://github.com/coding-to-music/install-virtualbox-on-digitalocean-or-contabo
 
+
+# MicroK8s
+
+https://microk8s.io/?_gl=1*vqfb35*_gcl_au*MTU0NjY4NTgwMi4xNzM5ODIyNTg0
 
 ## File Permissions for SSH Keys
 Private Key (id_rsa):
@@ -138,6 +142,9 @@ tar -xzvf archive_name.tar.gz
 
 ## Setup HashiCorp Vault to store secrets
 
+```java
+```
+
 ## Install salt-master
 
 Create a Separate Configuration File to specify where the salt files are located:
@@ -151,23 +158,91 @@ Add Custom Configuration:
 ```java
 file_roots:
   base:
-    - /path/to/saltstack-repo
+    - /srv/salt/base
   dev:
-    - /path/to/saltstack-repo/dev
-  staging:
-    - /path/to/saltstack-repo/staging
-  production:
-    - /path/to/saltstack-repo/production
+    - /srv/salt/dev
 
 pillar_roots:
   base:
-    - /path/to/saltstack-repo/pillar
+    - /srv/pillar/base
+  dev:
+    - /srv/pillar/dev
+```
+
+```java
+sudo mkdir -p /srv/pillar/base
+sudo mkdir -p /srv/pillar/dev
+sudo chown -R root:root /srv/pillar
+sudo chmod -R 755 /srv/pillar
+
+sudo nano /srv/pillar/base/top.sls
+```
+
+```java
+base:
+  '*':
+    - example_pillar
+```
+
+```java
+sudo nano /srv/pillar/base/example_pillar.sls
+```
+
+```java
+example_key: example_value
 ```
 
 Restart the Salt Master:
 
 ```java
 sudo systemctl restart salt-master
+sudo systemctl restart salt-minion
+sudo systemctl status salt-master
+sudo systemctl status salt-minion
+sudo salt-run fileserver.update
+
+sudo salt '*' pillar.items
+```
+
+```java
+sudo nano /srv/salt/base/test.sls
+```
+
+```java
+sudo chown -R root:root /srv/salt
+sudo chmod -R 755 /srv/salt
+
+sudo salt '*' state.apply test
+```
+
+
+To see what SLS files Salt can access, you can use the salt-run command to list all the available states. Here’s how you can do it:
+
+List Available States:
+
+Run the salt-run command with the `fileserver.update` and `fileserver.file_list` options to refresh the fileserver cache and list all the available SLS files:
+
+```java
+sudo salt-run fileserver.update
+sudo salt-run fileserver.file_list
+
+sudo journalctl -u salt-master
+
+sudo tail -f /var/log/salt/master
+
+sudo journalctl -u salt-master -f
+
+sudo tail -f /var/log/salt/minion
+
+sudo journalctl -u salt-minion -f
+```
+
+Filter for SLS Files:
+
+You can further filter the output to list only the SLS files:
+
+```java
+sudo salt-run fileserver.file_list | grep '.sls'
 ```
 
 ## Install salt-minions
@@ -206,6 +281,8 @@ Apply a State File:
 
 ```java
 sudo salt '*' state.apply setup_user
+
+sudo salt '*' state.apply base
 ```
 
 Run Arbitrary Commands:
@@ -232,6 +309,116 @@ sudo salt 'dev-*' state.apply setup_user
 # or
 
 sudo salt 'server_name' state.apply setup_user
+
+sudo salt '*' state.apply base
+
+sudo salt '*' state.apply test
 ```
 
+Print out the salt configuration values
 
+```java
+sudo salt-call --local config.get file_roots
+
+```
+
+Create symlink so the default location will be my file location
+
+```java
+sudo ln -s /path/to/saltstack-repo/your_state_file.sls /srv/salt/your_state_file.sls
+
+sudo ln -s /path/to/saltstack-repo/dev /srv/salt/dev
+sudo ln -s /path/to/saltstack-repo/base /srv/salt/base
+sudo ln -s /path/to/saltstack-repo/staging /srv/salt/staging
+sudo ln -s /path/to/saltstack-repo/production /srv/salt/production
+```
+
+Verify that the symlinks have been created correctly:
+
+```java
+ls -l /srv/salt
+```
+
+# Using GitHub for Salt States
+
+Install pip
+
+```java
+sudo apt update
+sudo apt install python3-pip
+```
+
+validate
+
+```java
+pip3 --version
+```
+
+Output
+
+```java
+pip 24.0 from /usr/lib/python3/dist-packages/pip (python 3.12)
+```
+
+Install Yarn
+
+```java
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update
+
+sudo apt install yarn
+
+# validate
+yarn --version
+```
+
+Install GitPython:
+
+```java
+sudo pip install GitPython
+```
+
+Edit Configuration:
+
+```java
+sudo nano /etc/salt/master
+```
+
+Update Configuration:
+
+```java
+gitfs_provider: gitpython
+```
+
+```java
+fileserver_backend:
+  - roots
+  - git
+```
+
+```java
+gitfs_remotes:
+  - https://github.com/<your-username>/<your-repo>.git
+```
+
+Restart Salt Master:
+
+sh
+sudo systemctl restart salt-master
+
+Update Fileserver Cache:
+
+sh
+sudo salt-run fileserver.update
+sudo salt-run fileserver.file_list
+
+Apply a State from GitHub
+
+Apply State:
+
+Assuming your GitHub repo structure matches the expected state structure, you can now apply a state:
+
+sh
+sudo salt '*' state.apply <state-name>
+sudo salt '*' state.apply test

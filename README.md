@@ -341,6 +341,8 @@ ls -l /srv/salt
 
 # Using GitHub for Salt States
 
+Install needed software pip and pyenv and yarn
+
 Install pip
 
 ```java
@@ -368,16 +370,59 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update
 
 sudo apt install yarn
+```
 
-# validate
+validate
+
+```java
 yarn --version
 ```
 
-Install GitPython:
+Output
 
 ```java
-sudo pip install GitPython
+1.22.22
 ```
+
+## Using a Virtual Environment as Root
+
+Create a Virtual Environment:
+
+Use venv to create a new virtual environment:
+
+```java
+apt install python3.12-venv
+
+python3 -m venv /root/myenv
+```
+
+Activate the virtual environment:
+
+```java
+source /root/myenv/bin/activate
+```
+
+Install GitPython Within the Virtual Environment:
+
+Once the virtual environment is activated, use pip to install GitPython:
+
+```java
+pip install GitPython
+```
+
+Use GitPython:
+
+You can now use GitPython within this virtual environment.
+
+Deactivate the Virtual Environment:
+
+When you are done, you can deactivate the virtual environment:
+
+```java
+deactivate
+```
+
+# Using GitHub for Salt States
 
 Edit Configuration:
 
@@ -389,29 +434,27 @@ Update Configuration:
 
 ```java
 gitfs_provider: gitpython
-```
 
-```java
 fileserver_backend:
   - roots
   - git
-```
 
-```java
 gitfs_remotes:
   - https://github.com/<your-username>/<your-repo>.git
 ```
 
 Restart Salt Master:
 
-sh
+```java
 sudo systemctl restart salt-master
+```
 
 Update Fileserver Cache:
 
-sh
+```java
 sudo salt-run fileserver.update
 sudo salt-run fileserver.file_list
+```
 
 Apply a State from GitHub
 
@@ -419,6 +462,7 @@ Apply State:
 
 Assuming your GitHub repo structure matches the expected state structure, you can now apply a state:
 
-sh
+```java
 sudo salt '*' state.apply <state-name>
 sudo salt '*' state.apply test
+```

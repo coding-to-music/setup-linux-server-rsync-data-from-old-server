@@ -433,6 +433,8 @@ sudo nano /etc/salt/master
 Update Configuration:
 
 ```java
+python: /usr/bin/python3
+
 gitfs_provider: gitpython
 
 fileserver_backend:
@@ -466,3 +468,12 @@ Assuming your GitHub repo structure matches the expected state structure, you ca
 sudo salt '*' state.apply <state-name>
 sudo salt '*' state.apply test
 ```
+
+sudo apt update
+sudo apt install python3-git
+
+python3 -m pip show GitPython
+
+sudo salt-master --versions-report
+
+sudo /opt/salt/bin/pip install GitPython

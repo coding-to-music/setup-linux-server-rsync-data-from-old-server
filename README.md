@@ -475,5 +475,24 @@ sudo apt install python3-git
 python3 -m pip show GitPython
 
 sudo salt-master --versions-report
+sudo salt-master --versions-report | grep git
+
 
 sudo /opt/salt/bin/pip install GitPython
+
+## Onedir
+
+/opt/saltstack/salt/bin/python3.10 -m pip install --upgrade pip
+
+-- see what is installed
+salt-call pip.list
+
+salt-pip install <package-name>
+salt-pip install GitPython
+salt-pip install gitdb
+
+-- Could not find a version that satisfies the requirement python3-git  
+salt-pip install python3-git
+salt-pip install python3-pygit2
+
+

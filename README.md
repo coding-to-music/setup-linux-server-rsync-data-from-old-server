@@ -507,6 +507,7 @@ sudo systemctl restart salt-master
 
 sudo rm -rf /var/cache/salt/master/gitfs/*
 sudo salt-run fileserver.update
+sudo salt '*' state.apply test
 
 sudo salt-run fileserver.update
 sudo salt-run fileserver.file_list

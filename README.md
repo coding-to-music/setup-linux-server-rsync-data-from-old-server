@@ -498,8 +498,15 @@ salt-pip install gitdb
 salt-pip install python3-git
 salt-pip install python3-pygit2
 
+sudo chown -R salt:salt /var/cache/salt/master/gitfs
+sudo chmod -R 755 /var/cache/salt/master/gitfs
 
 journalctl -xeu salt-master.service
+
+sudo systemctl restart salt-master
+
+sudo rm -rf /var/cache/salt/master/gitfs/*
+sudo salt-run fileserver.update
 
 sudo salt-run fileserver.update
 sudo salt-run fileserver.file_list

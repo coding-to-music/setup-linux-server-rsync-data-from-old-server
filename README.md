@@ -384,42 +384,27 @@ Output
 1.22.22
 ```
 
-## Using a Virtual Environment as Root
-
-Create a Virtual Environment:
-
-Use venv to create a new virtual environment:
+### using non-gitfs for local salt files
 
 ```java
-apt install python3.12-venv
-
-python3 -m venv /root/myenv
+sudo nano /etc/salt/master
 ```
 
-Activate the virtual environment:
-
 ```java
-source /root/myenv/bin/activate
-```
+user: salt
 
-Install GitPython Within the Virtual Environment:
+fileserver_backend:
+  - roots
 
-Once the virtual environment is activated, use pip to install GitPython:
+file_roots:
+  base:
+    - /home/tmc/ap/vol8_24_12/setup-linux-server-rsync-data-from-old-server/srv/salt
+  dev:
+    - /home/tmc/ap/vol8_24_12/setup-linux-server-rsync-data-from-old-server/srv/salt
 
-```java
-pip install GitPython
-```
-
-Use GitPython:
-
-You can now use GitPython within this virtual environment.
-
-Deactivate the Virtual Environment:
-
-When you are done, you can deactivate the virtual environment:
-
-```java
-deactivate
+pillar_roots:
+  base:
+    - /home/tmc/ap/vol8_24_12/setup-linux-server-rsync-data-from-old-server/srv/salt/pillar
 ```
 
 # Using GitHub for Salt States
@@ -433,7 +418,7 @@ sudo nano /etc/salt/master
 Update Configuration:
 
 ```java
-python: /usr/bin/python3
+user: salt
 
 gitfs_provider: gitpython
 
@@ -442,7 +427,14 @@ fileserver_backend:
   - git
 
 gitfs_remotes:
-  - https://github.com/<your-username>/<your-repo>.git
+  - https://github.com/coding-to-music/setup-linux-server-rsync-data-from-old-server.git
+
+gitfs_root: srv/salt
+
+ext_pillar:
+  - git:
+    - main https://github.com/coding-to-music/setup-linux-server-rsync-data-from-old-server.git:
+        - root: srv/salt/pillar
 ```
 
 Restart Salt Master:
@@ -483,6 +475,11 @@ sudo salt-master --versions-report | grep git
 
 sudo /opt/salt/bin/pip install GitPython
 
+## Set the time zone to New York City
+
+sudo timedatectl set-timezone America/New_York
+
+
 ## Onedir
 
 /opt/saltstack/salt/bin/python3.10 -m pip install --upgrade pip
@@ -497,6 +494,8 @@ salt-pip install gitdb
 -- Could not find a version that satisfies the requirement python3-git  
 salt-pip install python3-git
 salt-pip install python3-pygit2
+
+sudo nano /etc/salt/master
 
 sudo chown -R salt:salt /var/cache/salt/master/gitfs
 sudo chmod -R 755 /var/cache/salt/master/gitfs

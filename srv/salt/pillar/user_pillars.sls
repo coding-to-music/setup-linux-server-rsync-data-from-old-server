@@ -1,2 +1,2 @@
-username: 'your_username'
-github_account: 'your_github_username'
+username: 'admin'
+github_account: 'coding-to-music'

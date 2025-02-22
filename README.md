@@ -449,11 +449,14 @@ Restart Salt Master:
 
 ```java
 sudo systemctl restart salt-master
+
+journalctl -xeu salt-master.service
 ```
 
 Update Fileserver Cache:
 
 ```java
+sudo rm -rf /var/cache/salt/master/gitfs/*
 sudo salt-run fileserver.update
 sudo salt-run fileserver.file_list
 ```
@@ -496,3 +499,10 @@ salt-pip install python3-git
 salt-pip install python3-pygit2
 
 
+journalctl -xeu salt-master.service
+
+sudo salt-run fileserver.update
+sudo salt-run fileserver.file_list
+
+sudo salt-run git_pillar.update
+sudo salt-run git_pillar.file_list

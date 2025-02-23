@@ -145,9 +145,74 @@ tar -xzvf archive_name.tar.gz
 ```java
 ```
 
-## Install salt-master
+## Install salt-master and/or salt-minion
 
-Create a Separate Configuration File to specify where the salt files are located:
+Ubuntu / Debian install
+
+https://docs.saltproject.io/salt/install-guide/en/latest/topics/install-by-operating-system/linux-deb.html
+
+```java
+# Ensure keyrings dir exists
+sudo mkdir -p /etc/apt/keyrings
+# Download public key
+sudo curl -fsSL https://packages.broadcom.com/artifactory/api/security/keypair/SaltProjectKey/public | sudo tee /etc/apt/keyrings/salt-archive-keyring.pgp
+# Create apt repo target configuration
+sudo curl -fsSL https://github.com/saltstack/salt-install-guide/releases/latest/download/salt.sources | sudo tee /etc/apt/sources.list.d/salt.sources
+```
+
+Available Installs (only install what is needed, such as only the salt-minion)
+
+```java
+sudo apt-get install salt-master
+sudo apt-get install salt-minion
+sudo apt-get install salt-ssh
+sudo apt-get install salt-syndic
+sudo apt-get install salt-cloud
+sudo apt-get install salt-api
+```
+
+
+In the minion Set the address of the Master 
+
+```java
+sudo nano /etc/salt/minion
+```
+
+```java
+interface: <address of the master>
+pidfile: /run/salt/minion.pid
+```
+
+If needed, Ensure the salt-minion can write to its log file
+
+```java
+sudo chmod -R 755 /var/log/salt/
+
+sudo touch  /etc/salt/minion_id
+sudo chown salt:salt /etc/salt/minion_id
+
+sudo mkdir -p /etc/salt/pki
+sudo chown -R salt:salt /etc/salt/pki
+
+sudo mkdir -p /run/salt
+sudo chown -R salt:salt /run/salt
+sudo chmod -R 755 /run/salt
+
+# might need to add the address of the master into /etc/hosts
+sudo nano /etc/hosts
+<address of the master> salt
+```
+
+Enable and start the available salt services
+
+```java
+sudo systemctl enable salt-master && sudo systemctl start salt-master
+sudo systemctl enable salt-minion && sudo systemctl start salt-minion
+sudo systemctl enable salt-syndic && sudo systemctl start salt-syndic
+sudo systemctl enable salt-api && sudo systemctl start salt-api
+```
+
+### Create a Separate Configuration File to specify where the salt files are located:
 
 ```java
 sudo nano /etc/salt/master.d/file_roots.conf
@@ -497,10 +562,18 @@ salt-pip install python3-pygit2
 
 sudo nano /etc/salt/master
 
+view lines that do not begin with # and are not blank lines
+grep -v -e '^#' -e '^$' /etc/salt/master
+grep -v -e '^#' -e '^$' /etc/salt/minion
+
 sudo chown -R salt:salt /var/cache/salt/master/gitfs
 sudo chmod -R 755 /var/cache/salt/master/gitfs
 
-journalctl -xeu salt-master.service
+sudo journalctl -u salt-minion.service
+sudo journalctl -u salt-master.service
+
+sudo journalctl -xeu salt-minion.service
+sudo journalctl -xeu salt-master.service
 
 sudo systemctl restart salt-master
 

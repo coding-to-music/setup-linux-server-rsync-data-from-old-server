@@ -600,6 +600,13 @@ sudo rm -rf /var/cache/salt/master/gitfs/*
 sudo salt-run fileserver.update
 sudo salt '*' state.apply test
 
+salt '*' test.version
+salt '*' disk.usage
+salt '*' sys.doc
+salt '*' cmd.run 'ls -l /etc'
+salt '*' pkg.install vim
+salt '*' network.interfaces
+
 sudo salt-run fileserver.update
 sudo salt-run fileserver.file_list
 

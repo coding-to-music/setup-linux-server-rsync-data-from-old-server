@@ -198,6 +198,10 @@ sudo mkdir -p /run/salt
 sudo chown -R salt:salt /run/salt
 sudo chmod -R 755 /run/salt
 
+sudo chmod -R 755 /etc/salt/minion.d
+sudo chown -R salt:salt /etc/salt/minion.d
+
+
 # might need to add the address of the master into /etc/hosts
 sudo nano /etc/hosts
 <address of the master> salt
@@ -210,6 +214,17 @@ sudo systemctl enable salt-master && sudo systemctl start salt-master
 sudo systemctl enable salt-minion && sudo systemctl start salt-minion
 sudo systemctl enable salt-syndic && sudo systemctl start salt-syndic
 sudo systemctl enable salt-api && sudo systemctl start salt-api
+```
+
+Check the status and logs
+
+```java
+sudo journalctl -u salt-minion.service -n 10
+
+sudo journalctl -u salt-master.service -n 10
+
+sudo systemctl status salt-minion
+sudo systemctl status salt-master
 ```
 
 ### Create a Separate Configuration File to specify where the salt files are located:
@@ -569,13 +584,17 @@ grep -v -e '^#' -e '^$' /etc/salt/minion
 sudo chown -R salt:salt /var/cache/salt/master/gitfs
 sudo chmod -R 755 /var/cache/salt/master/gitfs
 
-sudo journalctl -u salt-minion.service
-sudo journalctl -u salt-master.service
+sudo journalctl -u salt-minion.service -n 10
+sudo journalctl -u salt-master.service -n 10
 
 sudo journalctl -xeu salt-minion.service
 sudo journalctl -xeu salt-master.service
 
 sudo systemctl restart salt-master
+sudo systemctl restart salt-minion
+
+sudo systemctl status salt-master
+sudo systemctl status salt-minion
 
 sudo rm -rf /var/cache/salt/master/gitfs/*
 sudo salt-run fileserver.update
@@ -586,3 +605,37 @@ sudo salt-run fileserver.file_list
 
 sudo salt-run git_pillar.update
 sudo salt-run git_pillar.file_list
+
+sudo systemctl stop salt-master
+sudo salt-master -l debug
+
+Validate the /etc/salt/master is valid:
+
+sudo apt-get install yamllint
+sudo yamllint /etc/salt/master
+
+sudo salt-call --local config.get file_roots
+
+sudo rm -rf /var/cache/salt/*
+sudo rm -rf /var/run/salt/*
+sudo rm -rf /var/log/salt/*
+
+sudo salt-call --local --config-dir=/etc/salt config.get file_roots
+
+sudo chown -R salt:salt /var/cache/salt
+sudo chmod -R 755 /var/cache/salt
+
+sudo mkdir -p /var/cache/salt/master/jobs/db
+sudo mkdir -p /var/cache/salt/master/file_lists/roots
+
+sudo chown -R salt:salt /var/cache/salt/master
+
+sudo chown -R salt:salt /var/cache/salt/master/file_lists/roots
+sudo chmod -R 755 /var/cache/salt/master/file_lists/roots
+
+sudo mkdir -p /var/cache/salt/master/file_lists/roots/.base.w
+sudo mkdir -p /var/cache/salt/master/roots/mtime_map
+sudo mkdir -p /var/cache/salt/master/jobs/4b
+
+sudo chown -R salt:salt /var/cache/salt/master/roots/*
+sudo chown -R salt:salt /var/cache/salt/master/jobs/*

@@ -646,3 +646,95 @@ sudo mkdir -p /var/cache/salt/master/jobs/4b
 
 sudo chown -R salt:salt /var/cache/salt/master/roots/*
 sudo chown -R salt:salt /var/cache/salt/master/jobs/*
+
+### Use salt-key so the master and minion can communicate
+
+```java
+salt-key -F master
+salt-key -f foo.domain.com
+salt-key -L
+salt-key -a
+salt-key -A
+```
+
+If you change what master the minion should point to then you may need to remove the key and restart the minion
+
+```java
+rm /var/lib/salt/pki/minion/minion_master.pub
+```
+
+### Pin the salt-master and salt-minion to version 3006.*
+
+```java
+sudo nano /etc/apt/preferences.d/salt-pin-1001
+```
+
+```java
+Package: salt-*
+Pin: version 3006.*
+Pin-Priority: 1001
+```
+
+```java
+sudo apt-get update
+sudo apt-get install salt-master salt-minion
+
+sudo apt-get install salt-master=3006.* salt-minion=3006.*
+```
+
+```java
+sudo apt-get install salt-common=3006.9
+sudo apt-get install salt-master=3006.9
+sudo apt-get install salt-minion=3006.9
+sudo apt-get install salt-ssh=3006.9
+sudo apt-get install salt-syndic=3006.9
+sudo apt-get install salt-cloud=3006.9
+sudo apt-get install salt-api=3006.9
+```
+
+```java
+# Example commands for pinning a current package minor so that
+# it is skipped during system-wide apt-get upgrade events
+
+sudo apt-mark hold salt-master
+sudo apt-mark hold salt-minion
+sudo apt-mark hold salt-ssh
+sudo apt-mark hold salt-syndic
+sudo apt-mark hold salt-cloud
+sudo apt-mark hold salt-api
+```
+
+Warning
+
+Salt dependency conflicts
+
+If going with a non-latest point release of a target major version, you may be required to install other salt packages in a pinned fashion. For example, to install salt-minion, a user will be required to install salt-common at the same version:
+
+```java
+sudo apt-get install salt-minion=3006.9 salt-doc=3006.9
+```
+
+```java
+apt-cache madison salt-minion
+```
+
+```java
+apt-cache madison salt-minion
+salt-minion |     3007.1 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3007.0 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.9 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.8 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.7 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.6 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.5 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.4 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.3 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.2 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.1 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+salt-minion |     3006.0 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
+```
+
+```java
+sudo apt-get install salt-master=3006.9 salt-minion=3006.9
+```
+

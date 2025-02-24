@@ -676,6 +676,16 @@ Pin-Priority: 1001
 ```
 
 ```java
+sudo nano /etc/apt/preferences.d/salt-common-pin-1001
+```
+
+```java
+Package: salt-common
+Pin: version 3006.9
+Pin-Priority: 1001
+```
+
+```java
 sudo apt-get update
 sudo apt-get install salt-master salt-minion
 
@@ -734,8 +744,24 @@ salt-minion |     3006.1 | https://packages.broadcom.com/artifactory/saltproject
 salt-minion |     3006.0 | https://packages.broadcom.com/artifactory/saltproject-deb stable/main amd64 Packages
 ```
 
+Remove existing versions
+
 ```java
-sudo apt-get install salt-master=3006.9 salt-minion=3006.9
+sudo apt-get remove salt-master 
+sudo apt-get remove salt-minion
+sudo apt-get remove salt-ssh
+sudo apt-get remove salt-cloud
+sudo apt-get remove salt-syndic
+sudo apt-get remove salt-api
+
+sudo apt-get purge salt-master salt-minion
+
+sudo apt-get autoremove
+
+```
+
+```java
+sudo apt-get install salt-common=3006.9 salt-master=3006.9 salt-minion=3006.9
 ```
 
 Update the hosts file to know that the master server is also called salt

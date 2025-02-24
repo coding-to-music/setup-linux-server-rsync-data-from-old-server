@@ -738,3 +738,13 @@ salt-minion |     3006.0 | https://packages.broadcom.com/artifactory/saltproject
 sudo apt-get install salt-master=3006.9 salt-minion=3006.9
 ```
 
+Update the hosts file to know that the master server is also called salt
+
+```java
+sudo nano /etc/hosts
+```
+
+```java
+<master_ip_address> salt
+```
+

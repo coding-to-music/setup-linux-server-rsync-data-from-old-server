@@ -600,6 +600,7 @@ sudo rm -rf /var/cache/salt/master/gitfs/*
 sudo salt-run fileserver.update
 sudo salt '*' state.apply test
 
+salt '*' cmd.run 'hostname -I'
 salt '*' test.version
 salt '*' disk.usage
 salt '*' sys.doc

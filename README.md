@@ -284,8 +284,22 @@ sudo salt-run fileserver.update
 sudo salt '*' pillar.items
 ```
 
+create a `/srv/salt/base` directory if needed
+
+```java
+sudo mkdir -p /srv/salt/base
+```
+
 ```java
 sudo nano /srv/salt/base/test.sls
+```
+
+with this content
+
+```java
+test_state:
+  cmd.run:
+    - name: echo "Salt is working!"
 ```
 
 ```java

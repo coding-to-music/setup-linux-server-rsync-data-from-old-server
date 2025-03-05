@@ -433,6 +433,13 @@ Verify that the symlinks have been created correctly:
 ls -l /srv/salt
 ```
 
+The symlink can be deleted with rm and not affect the directory it is pointing to
+
+```java
+rm /srv/salt
+```
+
+
 # Using GitHub for Salt States
 
 Install needed software pip and pyenv and yarn

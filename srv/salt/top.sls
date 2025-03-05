@@ -4,6 +4,7 @@ base:
     - install_yarn
     - setup_user
     - timezone
+    - webserver
 dev:
   '*':
     - test

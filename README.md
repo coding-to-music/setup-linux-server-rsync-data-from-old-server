@@ -249,6 +249,14 @@ pillar_roots:
     - /srv/pillar/dev
 ```
 
+Set the ownership of /srv/salt to your username so you can store in GitHub
+
+```java
+sudo chown -R your_username:salt /srv/salt
+sudo usermod -aG salt your_username
+sudo chmod -R 770 /srv/salt
+```
+
 ```java
 sudo mkdir -p /srv/pillar/base
 sudo mkdir -p /srv/pillar/dev

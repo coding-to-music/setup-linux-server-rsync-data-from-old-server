@@ -370,7 +370,7 @@ When running Salt commands from the command line, you should use sudo to elevate
 
 ```java
 sudo salt '*' test.ping
-sudo salt '*' state.apply
+sudo salt '*' state.apply test
 ```
 
 Test Connectivity with Minions:
